@@ -29,6 +29,8 @@ The data is saved in \verb+\Sexpr{getwd()}+.  The data files used are \verb+\Sex
 
 <<std-curve-analysis, echo=TRUE>>=
 glucose.mwt <- 180.15588 #g/mol not used unless wanting to convert to molar
+std_blank <- 42 #the blank for the standard curve
+std_curve$A505.blanked <- std_curve$A505-std_blank
 std_fit <- lm(Glucose~A505 -1, data=std_curve) #force through intercept
 @
 
@@ -37,7 +39,7 @@ The slope of the curve was \Sexpr{round(coef(std_fit),4)}ug/mAU (95\% CI of \Sex
 \begin{figure}
 \begin{center}
 <<label=std-curve,fig=TRUE,echo=FALSE>>=
-plot(Glucose~A505, data=std_curve,
+plot(Glucose~A505.blanked, data=std_curve,
      ylab="Glucose (ug)",
      ylim=c(0,max(std_curve$Glucose)),
      xlim=c(0,max(std_curve$A505)))     )
