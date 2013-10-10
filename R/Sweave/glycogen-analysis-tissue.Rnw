@@ -30,25 +30,22 @@ The data is saved in \verb+\Sexpr{getwd()}+.  The data files used are \verb+\Sex
 <<std-curve-analysis, echo=TRUE>>=
 glucose.mwt <- 180.15588 #g/mol not used unless wanting to convert to molar
 std_fit <- lm(Glucose~A505 -1, data=std_curve) #force through intercept
-summary(std_fit)
 @
 
-<<label=std-curve, include=FALSE, echo=FALSE>>=
+The slope of the curve was \Sexpr{round(coef(std_fit),4)}ug/mAU (95\% CI of \Sexpr{round(confint(std_fit)[1],3)}-\Sexpr{round(confint(std_fit)[2],3)}) with a R\textsuperscript{2} of \Sexpr{round(summary(std_fit)$r.squared,3)}.  See Figure \ref{fig:std_curve} for the standard curve.
+
+\begin{figure}
+\begin{center}
+<<label=std-curve,fig=TRUE,echo=FALSE>>=
 plot(Glucose~A505, data=std_curve,
      ylab="Glucose (ug)",
      ylim=c(0,max(std_curve$Glucose)),
      xlim=c(0,max(std_curve$A505)))     )
 abline(std_fit)
 @
-
-\begin{figure}
-\begin{center}
-<<label=std-curve,fig=TRUE,echo=FALSE>>=
-<<std-curve>>
-@
 \end{center}
 \caption{Standard Curve for Glucose Assay.}
-\label{fig:one}
+\label{fig:std_curve}
 \end{figure}
 
 
