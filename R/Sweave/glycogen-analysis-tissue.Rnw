@@ -50,7 +50,9 @@ abline(std_fit)
 
 
 <<data-analysis, echo=TRUE>>=
-merged_data$Glycogen <- merged_data$A505*coefficients(std_fit) #in ug/assay
+assay_blank = 46 #the buffer blank for the assay samples
+merged_data$A505.blanked <- merged_data$A505 - assay_blank
+merged_data$Glycogen <- merged_data$A505.blanked*coefficients(std_fit) #in ug/assay
 assay.volume <- 100 #uL
 merged_data$total.glycogen <- merged_data$Glycogen*200/assay.volume #in ug
 merged_data$normalized.glycogen <- merged_data$total.glycogen/merged_data$Weight*1000 # in ug/g
