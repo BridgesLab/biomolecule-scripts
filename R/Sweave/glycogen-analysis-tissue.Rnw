@@ -40,9 +40,7 @@ The slope of the curve was \Sexpr{round(coef(std_fit),4)}ug/mAU (95\% CI of \Sex
 \begin{center}
 <<label=std-curve,fig=TRUE,echo=FALSE>>=
 plot(Glucose~A505.blanked, data=std_curve,
-     ylab="Glucose (ug)",
-     ylim=c(0,max(std_curve$Glucose)),
-     xlim=c(0,max(std_curve$A505)))     )
+     ylab="Glucose (ug)",xlab="Absorbance at 505 nm (blanked)", pch=19)
 abline(std_fit)
 @
 \end{center}
