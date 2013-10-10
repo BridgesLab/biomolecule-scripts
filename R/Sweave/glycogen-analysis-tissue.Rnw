@@ -15,15 +15,17 @@
 <<data-input, echo=FALSE>>=
 working_directory <- 'some location'
 setwd(working_directory)
-data_file <- "raw_glycogen_data.csv" #columns include Volume, Weight, A505 and Treatment or Genotype
+data_file <- "raw_glycogen_data.csv" #columns include Mouse, Volume, Weight, A505
 data <- read.csv(data_file)
 #std_curve_file <- "std_curve.csv" #columns Glucose, A505
 #std_curve <- read.csv(std_curve_file)
-#uncomment the previous two lines and comment the next two if entering std curve data from a file
-std_curve <- data.frame(Glucose = c(0,0.2,0.4,0.6,0.8,1.0), A505=c(0,140,269,360,471,561)) 
+mapping_file <- "../../mapping.csv" #columns Mouse and Treatment/Genotype/Manipulation
+mapping <- read.csv(mapping_file)
+merged_data <- (data, mapping, by="Mouse")
 @
 
-The data is saved in \Sexpr{working_directory}.
+The data is saved in \verb+\Sexpr{getwd()}+.  The data files used are \verb+\Sexpr{std_curve_file}+ for the standard curve, \verb+\Sexpr{raw_data_file}+ for the raw data and \verb+\Sexpr{mapping_file}+ for the mouse-treatment mapping.
+
 
 <<std-curve-analysis, echo=TRUE>>=
 glucose.mwt <- 180.15588 #g/mol not used unless wanting to convert to molar
@@ -51,13 +53,13 @@ abline(std_fit)
 
 
 <<data-analysis, echo=TRUE>>=
-data$Glycogen <- data$A505*coefficients(std_fit) #in ug/assay
+merged_data$Glycogen <- merged_data$A505*coefficients(std_fit) #in ug/assay
 assay.volume <- 100 #uL
-data$total.glycogen <- data$Glycogen*200/assay.volume #in ug
-data$normalized.glycogen <- data$total.glycogen/data$Weight*1000 # in ug/g
-calculated.data <- data.frame(Mouse = data$Mouse, 
-                              Treatment = data$Treatment,
-                              Glycogen = data$normalized.glycogen,
+merged_data$total.glycogen <- merged_data$Glycogen*200/assay.volume #in ug
+merged_data$normalized.glycogen <- merged_data$total.glycogen/merged_data$Weight*1000 # in ug/g
+calculated.data <- data.frame(Mouse = merged_data$Mouse, 
+                              Treatment = merged_data$Treatment,
+                              Glycogen = merged_data$normalized.glycogen,
                               check.rows=F)
 result.t.test <- t.test(Glycogen~Treatment, data=calculated.data) #for single comparason
 #result.t.test <- with(calculated.data, pairwise.t.test(Glycogen,Treatment)) for multiple comparasons
