@@ -11,9 +11,9 @@ stat shrimp_out
 
 for file in `ls *.fastqcssanger` ; do
     #this runs the colorspaced gmapper then pipes the result through samtools to generate a bam file
-    echo "gmapper-cs -Q $file $REFERENCE | samtools view -bS > shrimp_out/$file.bam" > $file.sh
-    echo "Processing $file"
+    echo "gmapper-cs -Q $file $REFERENCE | samtools view -bS > shrimp_out/${file%%.*}.bam" > ${file%%.*}.sh
+    echo "Processing ${file%%.*}"
     #submits the job to the queue 
-    qsub -cwd $file.sh
-    rm $file.sh
+    qsub -cwd ${file%%.*}.sh
+    rm ${file%%.*}.sh
 done
