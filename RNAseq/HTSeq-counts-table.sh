@@ -11,7 +11,7 @@ echo "Searching for accepted_hits.bam files in $TOPHAT_OUT
 
 for directory in `ls $TOPHAT_OUT` ; do
     #then write a script which pipes the samtools view output (which makes the sam file) then makes a file called counts
-    echo "samtools view $TOPHAT_OUT/$directory/accepted_hits.bam |  htseq-count --stranded=no  --mode=intersection_nonempty - $GTF > $directory-counts.txt" > $directory.sh
+    echo "samtools view $TOPHAT_OUT/$directory/accepted_hits.bam |  htseq-count --stranded=no  --mode=intersection-nonempty - $GTF > $directory-counts.txt" > $directory.sh
     echo "Processing $directory"
     #submits the job to the queue 
     qsub -cwd $directory.sh
