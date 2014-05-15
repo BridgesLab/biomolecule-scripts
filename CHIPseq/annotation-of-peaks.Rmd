@@ -1,0 +1,30 @@
+Annotation of CHIPseq Peaks
+============================
+
+```{r setup}
+#source("http://bioconductor.org/biocLite.R")
+#biocLite("ChIPpeakAnno")
+bed.file.rep1 <- "rep1_summits.bed"
+
+library(ChIPpeakAnno)
+peakList_rep1 <- BED2RangedData(bed.file.rep1)
+data(TSS.human.NCBI36)
+library(biomaRt)
+#make sure this is the correcte reference genome
+mart<-useDataset("hsapiens_gene_ensembl",useMart("ensembl"))
+hs_annotation_tss <- getAnnotation(mart, featureType='TSS')
+#can do TSS, miRNA, Exon, 5utr, 3utr, ExonPlusUtr, transcript
+
+annotatedPeak_tss = annotatePeakInBatch(peakList_rep1, 
+                                    AnnotationData=hs_annotation_tss)
+#add gene ids to the peak
+library(org.Hs.eg.db)
+annotatedPeak_tss <- addGeneIDs(annotatedPeak_tss,"org.Hs.eg.db",c("symbol"))
+
+
+#get GO category enrichment
+enrichedGO <- getEnrichedGO(annotatedPeak, orgAnn = "org.Hs.eg.db", maxP =0.01, multiAdj = TRUE, minGOterm = 10, multiAdjMethod = "BH" )
+
+summarizePatternInPeaks(patternFilePath=filepath, format="fasta", skip=0L, BSgenomeName=Ecoli, peaks=peaks)
+
+```
