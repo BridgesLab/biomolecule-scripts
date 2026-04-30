@@ -25,7 +25,7 @@ Ensure you have the `data.table` package installed:
 ```r
 install.packages("data.table")
 library(data.table)
-source("pseudorandomize_cages.R")
+source("https://raw.githubusercontent.com/BridgesLab/biomolecule-scripts/refs/heads/master/R/pseudorandomization.R")
 
 # Example: Balancing OLM scores across Cages, while checking for Sex and Age balance
 results <- pseudorandomize_cages(
