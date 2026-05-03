@@ -87,8 +87,20 @@ pseudorandomize_cages <- function(dt, target_col, extra_vars = NULL, max_attempt
         s <- strata_list[i]
         row_idx <- Reduce("&", lapply(extra_vars, function(v) cage_info[[v]] == s[[v]]))
         stratum_cages <- cage_info[row_idx, Cage]
-        n_a <- floor(length(stratum_cages) / 2)
-        a_cages <- sample(stratum_cages, size = n_a)
+
+        # Balance by animal count, not cage count: shuffle for randomness,
+        # then greedily assign each cage to whichever group has fewer animals.
+        cage_sizes <- working_dt[Cage %in% stratum_cages, .N, by = Cage]
+        cage_sizes <- cage_sizes[sample(.N)]   # random order
+        nA_count <- 0L; nB_count <- 0L; a_cages <- character(0)
+        for (k in seq_len(nrow(cage_sizes))) {
+          if (nA_count <= nB_count) {
+            a_cages    <- c(a_cages, cage_sizes$Cage[k])
+            nA_count   <- nA_count + cage_sizes$N[k]
+          } else {
+            nB_count   <- nB_count + cage_sizes$N[k]
+          }
+        }
         cage_info[row_idx, Treatment := ifelse(Cage %in% a_cages, "A", "B")]
       }
 
